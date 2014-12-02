@@ -35,16 +35,17 @@
 
       #signature {
         position: absolute;
-        right: 4px;
-        bottom: 1px;
+        right: 0;
+        bottom: 0;
+        padding: 3px 5px 3px 2px;
         font-size: 12px;
-        color: #141414;
+        color: rgba(127, 127, 127, 0.5);
         text-decoration: none;
       }
 
       #signature:hover {
-        color: #999999;
-        text-decoration: underline;
+        color: #333333;
+        background-color: white;
       }
       
       .warning {
@@ -184,11 +185,14 @@
         float depth = unpackDepth(rgbaDepth);
 
         vec4 baseColor = texture2D(uTextureMap, vTexCoord * vec2(3.0, 1.5) - vec2(0.0, 0.25));
-        baseColor = vec4(baseColor.aaa * 0.6, baseColor.a);
-        baseColor.rgb *= 1.5;
+        if (baseColor.r > baseColor.g + baseColor.b) {
+          baseColor = vec4(baseColor.a * 0.6, 0.0, 0.0, baseColor.a);  
+        } else {
+          baseColor = vec4(baseColor.aaa * 0.6, baseColor.a);          
+        }
 
         if (baseColor.a < 1.0) {
-          float colorModifier = throb(vModelPosition) * 1.8;
+          float colorModifier = throb(vModelPosition) * 1.4;
           vec4 throbColor = colorModifier > 0.0 ? uColor1 : uColor2;
           throbColor.rgb *= abs(colorModifier);
           baseColor = vec4(mix(throbColor.rgb, baseColor.rgb, baseColor.a), 1.0);
@@ -245,7 +249,7 @@
 
         texture_image.src = "img/logo-transparent_bg.png";
 
-        gl.clearColor(0, 0, 0, 1.0);
+        gl.clearColor(0, 0, 0, 0);
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
 
@@ -326,8 +330,8 @@
           },
           rotation_matrix: mat4.create(),
           scale: current_radius,
-          color1: [0.0, 1.0, 0.0, 1.0],
-          color2: [1.0, 0.0, 0.0, 1.0],
+          color1: [0.0, 1.0, 1.0, 1.0],
+          color2: [0.0, 1.0, 0.0, 1.0],
           uPosFrequency: [
             12,
             6,
